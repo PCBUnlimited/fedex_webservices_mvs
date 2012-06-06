@@ -1,0 +1,50 @@
+Installation Instructions (or an attempt at them)
+
+You must already have a current FedEx shipping account to use this module!
+
+What little support there is for this module can be found on the OsCommerce Support site:
+http://forums.oscommerce.com/topic/375063-fedex-web-services-v9/
+
+BACKUP BACKUP BACKUP
+These instructions are to be used at your own risk; I assume no responsibility for data loss or damage!
+
+Backup your database and catalog files!!
+
+New Installation:
+Copy all files inside the FedEx folder to your catalog installation.
+Be careful to observe the directory tree to get the files in the right folders.
+This module does require PHP 5 or better with SOAP installed to operate.
+Copy the soap_test.php to your catalog root directory and run it from a web browser:
+http://(your-catalog-URL)/soap_test.php
+It will indicate if you have soap enabled. If not, stop, you can not use this module.
+
+WARNING!!!
+Once this module is installed and you have allowed it to obtain a quote from FedEx they will move your account off of the older API servers and you will no longer be able to obtain quotes using any of the now outdated FedEx real time quotes or other FedEx API modules.
+
+From your catalog Admin -> Modules -> Shipping
+Locate FedEx and enter your information ie. Address and shipping methods allowed and such.
+(I strongly suggest you adjust the surcharge rate and test to make sure you are not quoting rates to low.)
+(Also the FedEx quote modules have been known to fail on international shipments if you select List Rates.)
+
+Go To:  https://www.fedex.com/wpor/web/jsp/drclinks.jsp?links=wss/production.html
+Log in to your FedEx account, then on the resulting page, at the bottom of the page, locate the 
+ 
+Obtain Production Key link.
+
+Follow the instructions and process.
+FedEx will give you a new
+FedEx Web Services Key and meter number.
+FedEx will email you a new password (strictly for use in this module, it does not change your current www.fedex.com logon information)
+
+Enter the Key, Meter, Password and account number in the fields in the Web Services Shipping module.
+
+Click the Enable to TRUE and click the save button.
+
+Log on to your catalog and attempt to place a test order, only as far as obtaining a rate quote.
+If you do not get a quote from this module check your entries in the Module administration and make sure they are correct.
+
+Upgrade from a previous version of this module:
+BACKUP your current Web Services module files!!
+Change only the updated files or apply the changes to your current files using a program like Beyond2Compare.
+
+Please forgive me for the crudity of these instructions. I did not write this module and prior to now there have been no install instructions provided so I am just trying to help.

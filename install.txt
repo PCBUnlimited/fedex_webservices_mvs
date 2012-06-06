@@ -1,0 +1,204 @@
+Installation Instructions 
+
+last updated: 5/20/2012 - by Roaddoctor
+Fedex webservices V9.4.2
+
+You must already have a current FedEx shipping account to use this module!
+
+What little support there is for this module can be found on the OsCommerce Support site:
+http://forums.oscommerce.com/topic/375063-fedex-web-services-v9/page__st__200
+
+
+STEP 1
+BACKUP BACKUP BACKUP
+These instructions are to be used at your own risk; I assume no responsibility for data loss or damage!
+
+Backup your database and catalog files!!
+
+************************************************
+
+STEP 2 - for New Installations:
+
+Copy all files inside the fedex folder to your catalog installation.
+Be careful to observe the directory tree to get the files in the right folders.
+This module does require PHP 5 or better with SOAP installed to operate.
+Copy the soap_test.php to your catalog root directory and run it from a web browser:
+http://(your-catalog-URL)/soap_test.php
+It will indicate if you have soap enabled. If not, stop, you can not use this module without SOAP.
+
+CAUTION!
+Once this module is installed and you have allowed it to obtain a quote from FedEx, they could possibly move your account off of the older API servers and you might not be able to obtain further quotes using any of the now outdated FedEx Real Time Quotes or other FedEx API modules. If you need testing time it may be wise to contact fedex integration and let them know your needs.
+
+
+************************************************
+
+STEP 2 - for Basic UPGRADE Installations [for all prior versions ---> to v9.4.2]:
+ 
+0. BACKUP your files 
+1. did we mention BACKUP BACKUP BACKUP!! 
+2. Write down or otherwise save the current data and settings of your FedEx Webservices account.
+3. Remove the module in admin.
+4. Upload the new file(s) - usually just /catalog/includes/modules/fedexwebservices.php
+5. Install the updated module in admin.
+6. Enter the information you saved from step 2
+
+
+************************************************
+
+
+STEP 3
+Both New installations and Upgrade installations read below to determine if you need to make further changes:
+
+///////////////////////////////////////////////////////////////////
+
+BEGIN INSTRUCTIONS SECTION REGARDING SHIP-SEPERATE FUNTIONALITY for versions 9.4.1 or higher
+
+///////////////////////////////////////////////////////////////////
+
+For new installations and Upgrades from a previous version of this module:
+
+Specific instructions for updating any prior version to version 9.4.1 with ship-separate/ready-to-ship capability. The code below is tested for osc versions prior to 2.3. If your osc version is 2.3 or later, I can not say for sure if this is correct code. I have no way to test.
+
+- If you do not plan on using the Enable Ready to Ship capability you can ignore Step 4 and continue with Step 5. I'd suggest adding it anyway, just in case.
+
+- If you have FedEx real time quotes 2.06 or later previously installed - nothing special to do in this section. Your database and catalog already has the required "ship-seperate" field. If you have UPS XML installed with basic "product-ready-to-ship" installed you are all set as well. Skip to Step 5.
+
+-If you have never installed fedex real time quotes 2.06+ or UPS XML, and wish to use the ready-to-ship/ship separate capability of this module, there are a few changes we need to make. Continue to Step 4.
+
+
+////////////////////////////////////////////////////////////////////
+
+STEP 4
+BACKUP your files - BACKUP your database
+Did we mention BACKUP BACKUP BACKUP!! 
+Files that will require changes:
+- Your database
+- /catalog/admin/includes/languages/english/categories.php
+- /catalog/admin/categories.php
+
+
+STEP 4.1. Database
+
+    Upload file fedexweb.sql.php to the /catalog folder of your oscommerce website.
+    Enter in your browser adress: http://(your-catalog-URL)/fedexweb.sql.php end press "Enter";
+    Verify the success message. Delete the file fedex1.sql.php
+
+    This will add a "products_ship_sep" field into your database products table.
+
+
+STEP 4.2.  Add the following line to the file: /catalog/admin/includes/languages/english/categories.php 
+
+    at the end of file before the final   ?>
+
+    ADD:
+	
+    define('TEXT_SHIP_SEPARATELY', 'Ship-Separately:');
+    
+
+STEP 4.3.  Change the following lines in file: /catalog/admin/categories.php
+  
+  - Change from:
+
+          $sql_data_array = array('products_quantity' => tep_db_prepare_input($HTTP_POST_VARS['products_quantity']),
+              
+    Change to:
+
+          $sql_data_array = array('products_ship_sep' =>
+                                  (isset($HTTP_POST_VARS['products_ship_sep'])? '1':'0'),
+                                  'products_quantity' => tep_db_prepare_input($HTTP_POST_VARS['products_quantity']),
+  
+    
+  - Find near:
+    if ($action == 'new_product') {
+    
+    Change from:
+    'manufacturers_id' => '';
+    
+    Change to:
+    'products_ship_sep' => '',
+    'manufacturers_id' => '';
+
+   
+                    
+  - Find near:
+    if (isset($HTTP_GET_VARS['pID']) && empty($HTTP_POST_VARS)) {
+     
+    Change from:
+    p.manufacturers_id
+    
+    Change to:
+    p.products_ship_sep, p.manufacturers_id
+    
+
+    Change from:
+          <tr>
+            <td class="main"><?php echo TEXT_PRODUCTS_QUANTITY; ?></td>
+            <td class="main"><?php echo tep_draw_separator('pixel_trans.gif', '24', '15') . '&nbsp;' . tep_draw_input_field('products_quantity', $pInfo->products_quantity); ?></td>
+          </tr>
+    
+    Change to:
+          <tr>
+            <td class="main"><?php echo TEXT_SHIP_SEPARATELY; ?></td>
+            <td class="main"><?php echo tep_draw_separator('pixel_trans.gif', '24', '15') . '&nbsp;' . tep_draw_checkbox_field('products_ship_sep', $pInfo->products_ship_sep, '', "1"); ?></td>
+          </tr>
+          <tr>
+            <td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
+          </tr>
+          <tr>
+            <td class="main"><?php echo TEXT_PRODUCTS_QUANTITY; ?></td>
+            <td class="main"><?php echo tep_draw_separator('pixel_trans.gif', '24', '15') . '&nbsp;' . tep_draw_input_field('products_quantity', $pInfo->products_quantity); ?></td>
+          </tr>
+         
+ 
+  - Find near:
+      } elseif ($action == 'new_product_preview') {
+
+    Change from:
+    p.manufacturers_id
+    
+    Change to:
+    p.products_ship_sep, p.manufacturers_id 
+
+
+
+
+On your catalog admin product pages, you will now find a check box labeled "Ship seperately". If you select this checkbox, that item will then be rated by FedEx seperately without regard to max_weight limitations resulting in incorrect package splitting. Products not checked "Ship Seperately" continue to be processed per your stores existing configuration. In Checkout_shipping, it all comes together seamlessly and the customer now sees an item count and total weight, along with an accurate quote for the entire order!
+
+///////////////////////////////////////////////////////////////////
+
+END INSTRUCTIONS SECTION REGARDING SHIP-SEPERATE FUNTIONALITY for versions 9.4.1 or higher
+
+///////////////////////////////////////////////////////////////////
+
+
+Upgrade installations - your done - go test!
+
+
+STEP 5
+New installations - Continue with these instructions:
+
+From your catalog Admin -> Modules -> Shipping
+Locate the new FedEx module, install the module, and enter your information ie. Address and shipping methods allowed and such.
+(I strongly suggest you adjust the surcharge rate and test to make sure you are not quoting rates to low.)
+(Also the FedEx quote modules have been known to fail on international shipments if you select List Rates.)
+
+Go To:  https://www.fedex.com/wpor/web/jsp/drclinks.jsp?links=wss/production.html
+Log in to your FedEx account, then on the resulting page, at the bottom of the page, locate the Obtain Production Key link.
+
+Follow the instructions and process.
+FedEx will give you a new
+FedEx Web Services Key and meter number.
+FedEx will email you a new password (strictly for use in this module, it does not change your current www.fedex.com logon information)
+
+Enter the Key, Meter, Password and account number in the fields in the Web Services Shipping module.
+
+Click the Enable to TRUE and click the save button.
+
+Log on to your catalog and attempt to place a test order, only as far as obtaining a rate quote.
+If you do not get a quote from this module check your entries in the Module administration and make sure they are correct.
+
+Done
+
+
+Support:
+http://forums.oscommerce.com/topic/375063-fedex-web-services-v9/page__view__findpost__p__1636568

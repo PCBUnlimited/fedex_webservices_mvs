@@ -1,0 +1,45 @@
+
+v9.4.2 by Roaddoctor  5/20/2012
+Changes since v9.4.1
+- fixed text in Enable ready-to-ship field
+- Corrected error in $show_box_weight
+- fixed fatal divide by 0 error with Google Checkout
+
+TO DO LIST:
+- add switches for displaying item count, weight, transit days etc...
+- work out issues with EXT DAS, EXT RES DAS surcharges
+- add disable module limits by weight or box count
+- code SmartPost into the module
+- add seperate surcharge control field for freight (to apply your freight discount)
+
+////////////////////////////////////
+v9.4.1 by Roaddoctor
+Changes since v9.3   4/28/2012
+
+- Added "Ship-Seperate" functionality (for previous FedEx Real Time Quotes users), Mod will also recognize the "product-ready-to-ship" field (for previous UPS XML users).
+- Added seperate surcharges for ground, express, intl ground, international express.
+- Further improve Ground surcharge control by separating Ground Service surcharges from Ground Home Delivery surcharges 
+- Improved the rate presentation with item count, weight, and transit days for ground services.
+- Several more minor enhancements and fixes
+- Much thanks to Jeff Lew for his expertise and code improvements.
+ 
+
+TO DO LIST:
+- debug... Im sure its not perfect but its getting better
+- Code SmartPost into the module
+- test freight quote abilities - ive ignored this so far
+
+////////////////////////////////////
+
+v9.3
+Changes since V9.2  12/13/2011
+
+Added hack that dissallows customers using a PO Box as a shipping address.
+Added hack to dissallow FedEx from returning a Ground Rate quote to a foriegn customer. International ground (if enabled) is not affected.
+
+TO DO LIST:
+Fix module crash when customer enters special characters in address fields, ie. é è ñ á ó
+Fix module crash when order total wieght exceeds Admin > Configuration > Shipping/Packaging > Enter the Maximum Package Weight you will ship  value.
+Add Item Ship Seperatly addon from the old FedEx Realtime Quotes.
+
+///////////////////////////////////
